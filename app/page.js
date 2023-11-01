@@ -6,9 +6,8 @@ import Calendar from './components/Calendar'
 
 export default function Home() {
   // Estados para almacenar datos y estados seleccionados
-  const [api, setApi] = useState(null)
   const [selectedRoute, setSelectedRoute] = useState('')
-  const [emptyDates, setEmptyDates] = useState([])
+  const [dates, setDates] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   // Función para obtener datos del calendario a través de la API creada
@@ -17,18 +16,8 @@ export default function Home() {
       setIsLoading(true) // Muestra el indicador de carga
 
       const response = await fetch(`/api/allData/${route}`)
-
-      if (response.ok) {
-        const data = await response.json()
-        setApi(data)
-
-        const emptyDates = Object.keys(data.data).filter(
-          (date) => data.data[date].length === 0
-        )
-        setEmptyDates(emptyDates)
-      } else {
-        console.error('Error al obtener los datos de la API')
-      }
+      const {data} = await response.json()
+      setDates(data)
     } catch (error) {
       console.error('Error al realizar la solicitud a la API', error)
     } finally {
@@ -56,83 +45,9 @@ export default function Home() {
         handleRouteChange={handleRouteChange}
       />
       {isLoading ? (
-        <svg
-          className='m-auto mt-12'
-          width='120'
-          height='30'
-          viewBox='0 0 120 30'
-          xmlns='http://www.w3.org/2000/svg'
-          fill='#00000'
-        >
-          <circle cx='15' cy='15' r='15'>
-            <animate
-              attributeName='r'
-              from='15'
-              to='15'
-              begin='0s'
-              dur='0.8s'
-              values='15;9;15'
-              calcMode='linear'
-              repeatCount='indefinite'
-            />
-            <animate
-              attributeName='fill-opacity'
-              from='1'
-              to='1'
-              begin='0s'
-              dur='0.8s'
-              values='1;.5;1'
-              calcMode='linear'
-              repeatCount='indefinite'
-            />
-          </circle>
-          <circle cx='60' cy='15' r='9' fill-opacity='0.3'>
-            <animate
-              attributeName='r'
-              from='9'
-              to='9'
-              begin='0s'
-              dur='0.8s'
-              values='9;15;9'
-              calcMode='linear'
-              repeatCount='indefinite'
-            />
-            <animate
-              attributeName='fill-opacity'
-              from='0.5'
-              to='0.5'
-              begin='0s'
-              dur='0.8s'
-              values='.5;1;.5'
-              calcMode='linear'
-              repeatCount='indefinite'
-            />
-          </circle>
-          <circle cx='105' cy='15' r='15'>
-            <animate
-              attributeName='r'
-              from='15'
-              to='15'
-              begin='0s'
-              dur='0.8s'
-              values='15;9;15'
-              calcMode='linear'
-              repeatCount='indefinite'
-            />
-            <animate
-              attributeName='fill-opacity'
-              from='1'
-              to='1'
-              begin='0s'
-              dur='0.8s'
-              values='1;.5;1'
-              calcMode='linear'
-              repeatCount='indefinite'
-            />
-          </circle>
-        </svg>
-      ) : api !== null ? (
-        <Calendar emptyDates={emptyDates} />
+        <LoadingIcon />
+      ) : dates !== null ? (
+        <Calendar dates={dates} />
       ) : (
         <h3 className='text-4xl font-semibold text-[#004998] text-center'>
           Elija destino para mostrar fechas disponibles
@@ -141,3 +56,81 @@ export default function Home() {
     </main>
   )
 }
+
+const LoadingIcon = () => (
+  <svg
+    className='m-auto mt-12'
+    width='120'
+    height='30'
+    viewBox='0 0 120 30'
+    xmlns='http://www.w3.org/2000/svg'
+    fill='#00000'
+  >
+    <circle cx='15' cy='15' r='15'>
+      <animate
+        attributeName='r'
+        from='15'
+        to='15'
+        begin='0s'
+        dur='0.8s'
+        values='15;9;15'
+        calcMode='linear'
+        repeatCount='indefinite'
+      />
+      <animate
+        attributeName='fill-opacity'
+        from='1'
+        to='1'
+        begin='0s'
+        dur='0.8s'
+        values='1;.5;1'
+        calcMode='linear'
+        repeatCount='indefinite'
+      />
+    </circle>
+    <circle cx='60' cy='15' r='9' fill-opacity='0.3'>
+      <animate
+        attributeName='r'
+        from='9'
+        to='9'
+        begin='0s'
+        dur='0.8s'
+        values='9;15;9'
+        calcMode='linear'
+        repeatCount='indefinite'
+      />
+      <animate
+        attributeName='fill-opacity'
+        from='0.5'
+        to='0.5'
+        begin='0s'
+        dur='0.8s'
+        values='.5;1;.5'
+        calcMode='linear'
+        repeatCount='indefinite'
+      />
+    </circle>
+    <circle cx='105' cy='15' r='15'>
+      <animate
+        attributeName='r'
+        from='15'
+        to='15'
+        begin='0s'
+        dur='0.8s'
+        values='15;9;15'
+        calcMode='linear'
+        repeatCount='indefinite'
+      />
+      <animate
+        attributeName='fill-opacity'
+        from='1'
+        to='1'
+        begin='0s'
+        dur='0.8s'
+        values='1;.5;1'
+        calcMode='linear'
+        repeatCount='indefinite'
+      />
+    </circle>
+  </svg>
+)

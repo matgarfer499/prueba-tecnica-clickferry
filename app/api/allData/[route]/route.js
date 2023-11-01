@@ -4,7 +4,7 @@ import { format, addDays } from 'date-fns'
 // Función asincrónica para obtener datos de salidas para una ruta dada.
 async function fetchData(route) {
   const numberOfDays = 60
-  let data = {}
+  const data = []
   const currentDate = new Date()
 
   // Bucle para solicitar datos para cada día.
@@ -18,7 +18,9 @@ async function fetchData(route) {
     )
     // Esperar a que se complete la solicitud y almacenar el resultado en el objeto 'data'.
     const result = await request
-    data[formattedDate] = result
+    if(result.length !== 0) {
+      data.push(formattedDate)
+    }
   }
   return data
 }
